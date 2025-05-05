@@ -3,19 +3,31 @@
 using namespace std;
 
 bool MazeSolver::dfs(Maze& maze, int r, int c, vector<vector<bool>>& visited) {
-    /* TODO: Implement recursive DFS with backtracking.
+    // Guard: Check for out of bounds, wall, or already visited
+    if (r < 0 || r >= maze.grid.size() || c < 0 || c >= maze.grid[0].size() ||
+        maze.grid[r][c] == '#' || visited[r][c]) {
+        return false;
+    }
 
-    Suggested steps:
-    1. Guard   – out of bounds, wall, or already visited ➔ return false
-    2. Goal    – if (r,c) == finish, add to path and return true
-    3. Mark    – visited[r][c] = true
-    4. Explore – recursively call dfs on N,E,S,W
-    5. Success – if any recursive call returns true, push current cell onto
-                 maze.path and return true
-    6. Fail    – otherwise return false
-    */
+    // Goal: Check if the current position is the finish
+    if (maze.grid[r][c] == 'F') {
+        maze.path.push_back({r, c}); // Add finish to path
+        return true;
+    }
 
-    // TODO: Your implementation here
+    // Mark the current cell as visited
+    visited[r][c] = true;
+
+    // Explore in all four directions: North, East, South, West
+    if (dfs(maze, r - 1, c, visited) || // North
+        dfs(maze, r, c + 1, visited) || // East
+        dfs(maze, r + 1, c, visited) || // South
+        dfs(maze, r, c - 1, visited)) { // West
+        maze.path.push_back({r, c}); // Add current cell to path only if a path is found
+        return true;
+    }
+
+    // Fail: If no path is found, return false
     return false;
 }
 
